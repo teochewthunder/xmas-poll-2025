@@ -1,10 +1,17 @@
 <h1><%= @api_data["items"][0]["name"] %></h1>
 <div>
-	<%= form_with url: submit_poll_form local: true do |form| %>
+	<h2>Please rate each Christmas Carol on scale of 1 to 5 (1 being severely diliked, 5 being extremely liked)</h2>
+	<%= form_with url: submit_poll_form_path, local: true do |form| %>
 		<% @api_data["items"].each do |question| %>
 			<div>
 				<%= form.label "question_#{question["serial_no"]}", question["title"] %>
-				<%= form.text_field "answers[]", placeholder: "Your Rating", id: "question_#{question["serial_no"]}" %>
+				<%= form.range_field:none, 
+					name:"answers[]", 
+					min: 1, 
+					max: 5, 
+					value: 3, 
+					id: "question_#{question["serial_no"]}" 
+				%>
 			</div>
 		<% end %>
 	<% end %>
