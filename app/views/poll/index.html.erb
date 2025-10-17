@@ -2,15 +2,14 @@
 <div>
 	<h2>Please rate each Christmas Carol on scale of 1 to 5 (1 being severely diliked, 5 being extremely liked)</h2>
 	<%= form_with url: submit_poll_form_path, local: true do |form| %>
+		<% rating_options = (1..5).to_a %>
 		<% @api_data["items"].each do |question| %>
 			<div>
-				<%= form.label "question_#{question["serial_no"]}", question["title"] %>
-				<%= form.range_field:none, 
-					name:"answers[]", 
-					min: 1, 
-					max: 5, 
-					value: 3, 
-					id: "question_#{question["serial_no"]}" 
+				<%= form.label nil, "#{question['title']}" %>
+				<%= form.select :none, 
+					rating_options,
+					{ selected: 3 },
+					{ name: "answers[]", id: nil }
 				%>
 			</div>
 		<% end %>
