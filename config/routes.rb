@@ -12,5 +12,5 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "poll#index"
-  root "poll/submit", to: "poll#submit", as: "submit_poll_form"
+  post "poll/submit", to: "poll#submit", as: "submit_poll_form"
 end

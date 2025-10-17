@@ -1,6 +1,9 @@
 # Xmas Poll 2025 (TBC)
 Rails setup with Oracle Apex database
 
+## gems
+gem "httparty"
+
 ## Database Tables
 CREATE TABLE "POLLS" 
 (	

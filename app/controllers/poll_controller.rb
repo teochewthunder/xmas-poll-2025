@@ -2,7 +2,7 @@ require "httparty"
 
 class PollController < ApplicationController
   def index
-    response = HTTParty.get("https://api.example.com/data_for_form")
+    response = HTTParty.get("https://oracleapex.com/ords/teochewthunder/polls/poll/1")
 
     if response.code == 200
       @api_data = response.parsed_response

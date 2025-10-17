@@ -1,7 +1,7 @@
-<h1><%= @api_data["questions"][0]["poll"] %></h1>
+<h1><%= @api_data["items"][0]["name"] %></h1>
 <div>
 	<%= form_with url: submit_poll_form local: true do |form| %>
-		<% @api_data["questions"].each do |question| %>
+		<% @api_data["items"].each do |question| %>
 			<div>
 				<%= form.label "question_#{question["serial_no"]}", question["title"] %>
 				<%= form.text_field "answers[]", placeholder: "Your Rating", id: "question_#{question["serial_no"]}" %>
