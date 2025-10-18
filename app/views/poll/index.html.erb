@@ -6,11 +6,15 @@
 		<% @api_data["items"].each do |question| %>
 			<div>
 				<%= form.label nil, "#{question['title']}" %>
-				<%= form.select :none, 
-					rating_options,
-					{ selected: 3 },
-					{ name: "answers[]", id: nil }
-				%>
+				<% rating_options.each do |option| %>
+					<%= form.radio_button :none, 
+						option,
+						name: "answers[#{question['serial_no']}]", 
+						id: "answer_#{question['serial_no']}",
+						checked: option == 3
+					%>
+					<%= form.label "answer_#{question['serial_no']}_#{option}", option %>
+				<% end %>
 			</div>
 		<% end %>
 	<% end %>
