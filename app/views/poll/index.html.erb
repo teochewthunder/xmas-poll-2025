@@ -1,21 +1,26 @@
 <h1><%= @api_data["items"][0]["name"] %></h1>
 <div>
-	<h2>Please rate each Christmas Carol on scale of 1 to 5 (1 being severely diliked, 5 being extremely liked)</h2>
 	<%= form_with url: submit_poll_form_path, local: true do |form| %>
 		<% rating_options = (1..5).to_a %>
-		<% @api_data["items"].each do |question| %>
-			<div>
-				<%= form.label nil, "#{question['title']}" %>
-				<% rating_options.each do |option| %>
-					<%= form.radio_button :none, 
-						option,
-						name: "answers[#{question['serial_no']}]", 
-						id: "answer_#{question['serial_no']}",
-						checked: option == 3
-					%>
-					<%= form.label "answer_#{question['serial_no']}_#{option}", option %>
-				<% end %>
-			</div>
-		<% end %>
+		<table>
+			<tr><td width="300px"><b>Carol</b></td><td width="600px"><b>Rating</b></td></tr>
+			<% @api_data["items"].each do |question| %>
+			<tr>
+				<td><%= form.label nil, "#{question['title']}" %></td>
+				<td>
+					<% rating_options.each do |option| %>
+						<%= form.radio_button :none, 
+							option,
+							name: "answers[#{question['serial_no']}]", 
+							id: "answer_#{question['serial_no']}",
+							checked: option == 3
+						%>
+						<%= form.label "answer_#{question['serial_no']}_#{option}", option %>
+						&nbsp;&nbsp;&nbsp;
+					<% end %>
+				</td>
+			</tr>
+			<% end %>
+		</table>
 	<% end %>
 </div>
