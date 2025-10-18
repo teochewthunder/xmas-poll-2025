@@ -1,5 +1,5 @@
 <h1><%= @api_data["items"][0]["name"] %></h1>
-<div>
+<div class="pollform">
 	<%= form_with url: submit_poll_form_path, local: true do |form| %>
 		<% rating_options = (1..5).to_a %>
 		<table>
@@ -22,5 +22,6 @@
 			</tr>
 			<% end %>
 		</table>
+		<button>Test</button>
 	<% end %>
 </div>
