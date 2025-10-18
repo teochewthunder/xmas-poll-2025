@@ -3,7 +3,7 @@
 	<%= form_with url: submit_poll_form_path, local: true do |form| %>
 		<% rating_options = (1..5).to_a %>
 		<table>
-			<tr><td width="300px"><b>Carol</b></td><td width="600px"><b>Rating</b></td></tr>
+			<tr><td width="300px"><b>Carol</b></td><td width="600px"><b>Rating (1 = lowest, 5  = highest)</b></td></tr>
 			<% @api_data["items"].each do |question| %>
 			<tr>
 				<td><%= form.label nil, "#{question['title']}" %></td>
