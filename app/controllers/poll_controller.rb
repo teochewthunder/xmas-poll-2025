@@ -18,13 +18,12 @@ class PollController < ApplicationController
 
     # 2. Build the payload
     payload = {
-      user: 'some_identifier',
-      data: answers
+      answers: answers
     }
-
+Rails.logger.info "Payloa #{payload.to_json}"
     # 3. Make the POST request with httparty
     response = HTTParty.post(
-      "https://your-apex-rest-url.example.com/api/answers",
+      "https://oracleapex.com/ords/teochewthunder/polls/poll/1",
       body: payload.to_json,
       headers: { 'Content-Type' => 'application/json' }
     )
@@ -33,7 +32,7 @@ class PollController < ApplicationController
     if response.code == 200
       flash[:notice] = "Submission successful!"
     else
-      flash[:alert] = "API error: #{response.body}"
+      flash[:alert] = "API error: #{response.code}"
     end
 
     redirect_to root_path
