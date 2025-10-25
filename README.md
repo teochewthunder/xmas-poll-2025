@@ -3,6 +3,8 @@ Rails setup with Oracle Apex database
 
 ## gems
 gem "httparty"
+gem "oauth2"
+gem "dotenv-rails", groups: [:development, :test]
 
 ## Database Tables
 CREATE TABLE "POLLS" 
