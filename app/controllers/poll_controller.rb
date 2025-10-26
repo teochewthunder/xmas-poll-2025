@@ -60,10 +60,18 @@ Rails.logger.info ORDS_CLIENT_ID
 Rails.logger.info ORDS_CLIENT_SECRET
 Rails.logger.info ORDS_TOKEN_URL
 
+    connection_opts = {
+      request: {
+        open_timeout: 10,  # Timeout in seconds for opening the connection
+        read_timeout: 30   # Timeout in seconds for reading the response
+      }
+    }
+  
     client = OAuth2::Client.new(
       ORDS_CLIENT_ID,
       ORDS_CLIENT_SECRET,
-      token_url: ORDS_TOKEN_URL
+      token_url: ORDS_TOKEN_URL,
+      connection_opts: connection_opts
     )
     
     begin
