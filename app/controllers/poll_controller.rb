@@ -2,8 +2,13 @@ require "httparty"
 require "oauth2"
 
 class PollController < ApplicationController
+  ORDS_TOKEN_URL = ENV["ORDS_TOKEN_URL"]
+  ORDS_CLIENT_ID = ENV["ORDS_CLIENT_ID"]
+  ORDS_CLIENT_SECRET = ENV["ORDS_CLIENT_SECRET"]
+  ORDS_API_URL = ENV["ORDS_API_URL"]
+
   def index
-    response = HTTParty.get("https://oracleapex.com/ords/teochewthunder/polls/poll/1")
+    response = HTTParty.get(ORDS_API_URL)
 
     if response.code == 200
       @api_data = response.parsed_response
@@ -14,8 +19,6 @@ class PollController < ApplicationController
   end
 
   def submit
-Rails.logger.info "Payloa #{payload.to_json}"
-    
     # 1. Obtain an access token
     access_token = get_access_token
 
@@ -28,7 +31,7 @@ Rails.logger.info "Payloa #{payload.to_json}"
     # 2. Prepare and send the request with the access token
     answers = params[:answers]
     payload = { answers: answers }
-
+  Rails.logger.info "Payloa #{payload.to_json}"
     response = HTTParty.post(
       "https://oracleapex.com/ords/teochewthunder/polls/poll/1",
       body: payload.to_json,
@@ -37,7 +40,7 @@ Rails.logger.info "Payloa #{payload.to_json}"
         'Authorization' => "Bearer #{access_token}"
       }
     )
-
+Rails.logger.info response.body
     # 3. Handle the response
     if response.code == 200
       flash[:notice] = "Submission successful!"
@@ -53,6 +56,10 @@ Rails.logger.info "Payloa #{payload.to_json}"
   def get_access_token
     # This example uses a simple token retrieval. For production,
     # you would cache the token to avoid requesting a new one on every request.
+Rails.logger.info ORDS_CLIENT_ID
+Rails.logger.info ORDS_CLIENT_SECRET
+Rails.logger.info ORDS_TOKEN_URL
+
     client = OAuth2::Client.new(
       ORDS_CLIENT_ID,
       ORDS_CLIENT_SECRET,
@@ -66,6 +73,5 @@ Rails.logger.info "Payloa #{payload.to_json}"
       Rails.logger.error "OAuth2 Error: #{e.message}"
       nil
     end
-  end
   end
 end
