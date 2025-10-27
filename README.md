@@ -36,3 +36,64 @@ CREATE TABLE "POLL_RESULTS"
 );
 
 ## API Endpoints
+`GET`: https://oracleapex.com/ords/teochewthunder/polls/poll/:id
+
+SELECT p.NAME, pq.SERIAL_NO, pq.TITLE FROM POLLS p
+LEFT JOIN POLL_QUESTIONS pq ON pq.POLL_ID = p.ID
+WHERE p.ID = :id
+ORDER BY pq.SERIAL_NO
+
+`POST`: https://oracleapex.com/ords/teochewthunder/polls/poll/:id
+
+DECLARE
+  l_request_body CLOB;
+  l_keys APEX_T_VARCHAR2;
+  l_poll_id NUMBER := :id; -- Assuming your path template has :id for the poll ID
+BEGIN
+  -- 1. Read the request body sent to this endpoint
+  l_request_body := APEX_REST.GET_REQUEST_BODY_CLOB();
+
+  -- 2. Parse the JSON payload from the request body
+  APEX_JSON.parse(p_source => l_request_body);
+
+  -- 3. Get the keys (which are the serial numbers) from the 'answers' object
+  l_keys := APEX_JSON.get_members(p_path => 'answers');
+
+  -- 4. Process each key-value pair in the object
+  FOR i IN 1..l_keys.COUNT LOOP
+    DECLARE
+      l_serial_no VARCHAR2(255); -- Use VARCHAR2 for the key
+      l_answer_value VARCHAR2(4000);
+    BEGIN
+      -- Retrieve the key (serial number)
+      l_serial_no := l_keys(i);
+
+      -- Get the corresponding value for the key
+      l_answer_value := APEX_JSON.get_varchar2(p_path => 'answers.' || l_serial_no);
+
+      -- Insert into the table
+      --INSERT INTO POLL_RESULTS (POLL_ID, QUESTION_SERIAL_NO, ANSWER)
+      --VALUES (l_poll_id, TO_NUMBER(l_serial_no), l_answer_value);
+    END;
+  END LOOP;
+  
+  -- 5. Send a success response
+  APEX_JSON.open_object;
+  APEX_JSON.write('status', 'success');
+  APEX_JSON.write('message', 'Answers processed successfully');
+  APEX_JSON.close_object;
+
+EXCEPTION
+  WHEN OTHERS THEN
+    -- Ensure the exception handler is robust
+    APEX_JSON.open_object;
+    APEX_JSON.write('status', 'error');
+    APEX_JSON.write('message', 'PL/SQL Error: ' || SQLERRM);
+    APEX_JSON.close_object;
+END;
+
+`GET`: https://oracleapex.com/ords/teochewthunder/polls/poll/:id/results/
+
+SELECT pq.TITLE, MEAN(pr.RESULT) AS AV_RESULT FROM POLL_QUESTIONS pq
+LEFT JOIN POLL_RESULTS pr ON pr.QUESTION_SERIAL_NO = pq.SERIAL_NO AND pr.POLL_ID = :id AND pq.POLL_ID = :id
+GROUP BY pq.TITLE
