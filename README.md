@@ -92,6 +92,53 @@ EXCEPTION
     APEX_JSON.close_object;
 END;
 
+TEST
+DECLARE
+  -- Simulate the JSON payload from the Rails application
+  l_test_json CLOB := '{"answers":{"1":"2","2":"3"}}';
+
+  l_keys APEX_T_VARCHAR2;
+  l_poll_id NUMBER := 1; -- Use a dummy ID for testing
+BEGIN
+  -- Parse the hardcoded JSON string
+  APEX_JSON.parse(p_source => l_test_json);
+
+  -- Get the keys (which are the serial numbers) from the 'answers' object
+  l_keys := APEX_JSON.get_members(p_path => 'answers');
+
+  -- Process each key-value pair in the object
+  FOR i IN 1..l_keys.COUNT LOOP
+    DECLARE
+      l_serial_no VARCHAR2(255); -- Use VARCHAR2 for the key
+      l_answer_value VARCHAR2(4000);
+    BEGIN
+      -- Retrieve the key (serial number)
+      l_serial_no := l_keys(i);
+
+      -- Get the corresponding value for the key
+      l_answer_value := APEX_JSON.get_varchar2(p_path => 'answers.' || l_serial_no);
+
+      -- For debugging:
+      DBMS_OUTPUT.put_line('Key: ' || l_serial_no || ', Value: ' || l_answer_value);
+
+      -- Insert into the table (with appropriate TO_NUMBER conversion)
+      INSERT INTO POLL_RESULTS (POLL_ID, QUESTION_SERIAL_NO, RESULT)
+      VALUES (l_poll_id, TO_NUMBER(l_serial_no), l_answer_value);
+    END;
+  END LOOP;
+
+  COMMIT; -- Commit the transaction
+
+  DBMS_OUTPUT.put_line('Answers processed successfully.');
+
+EXCEPTION
+  WHEN OTHERS THEN
+    ROLLBACK; -- Rollback on error
+    DBMS_OUTPUT.put_line('PL/SQL Error: ' || SQLERRM);
+END;
+
+END TEST
+
 `GET`: https://oracleapex.com/ords/teochewthunder/polls/poll/:id/results/
 
 SELECT pq.TITLE, MEAN(pr.RESULT) AS AV_RESULT FROM POLL_QUESTIONS pq
