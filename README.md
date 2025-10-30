@@ -46,38 +46,37 @@ ORDER BY pq.SERIAL_NO
 `POST`: https://oracleapex.com/ords/teochewthunder/polls/poll/:id
 
 DECLARE
-  l_request_body CLOB;
-  l_keys APEX_T_VARCHAR2;
-  l_poll_id NUMBER := :id; -- Assuming your path template has :id for the poll ID
+  l_request_body_clob CLOB;
+  l_keys APEX_T_VARCHAR2 := APEX_T_VARCHAR2(); -- Initialize the collection
+  l_poll_id NUMBER := 1;
 BEGIN
-  -- 1. Read the request body sent to this endpoint
-  l_request_body := APEX_REST.GET_REQUEST_BODY_CLOB();
+  -- 1. Use the implicit :body_text bind variable to access the request body
+  l_request_body_clob := :body_text;
 
-  -- 2. Parse the JSON payload from the request body
-  APEX_JSON.parse(p_source => l_request_body);
+  -- 2. Parse the JSON payload from the CLOB
+  APEX_JSON.parse(p_source => l_request_body_clob);
 
   -- 3. Get the keys (which are the serial numbers) from the 'answers' object
   l_keys := APEX_JSON.get_members(p_path => 'answers');
-
-  -- 4. Process each key-value pair in the object
-  FOR i IN 1..l_keys.COUNT LOOP
-    DECLARE
-      l_serial_no VARCHAR2(255); -- Use VARCHAR2 for the key
-      l_answer_value VARCHAR2(4000);
-    BEGIN
-      -- Retrieve the key (serial number)
-      l_serial_no := l_keys(i);
-
-      -- Get the corresponding value for the key
-      l_answer_value := APEX_JSON.get_varchar2(p_path => 'answers.' || l_serial_no);
-
-      -- Insert into the table
-      --INSERT INTO POLL_RESULTS (POLL_ID, QUESTION_SERIAL_NO, ANSWER)
-      --VALUES (l_poll_id, TO_NUMBER(l_serial_no), l_answer_value);
-    END;
-  END LOOP;
   
-  -- 5. Send a success response
+  -- 4. Check if the collection has elements before iterating
+  IF l_keys IS NOT NULL AND l_keys.COUNT > 0 THEN
+    -- 5. Process each key-value pair in the object
+    FOR i IN 1..l_keys.COUNT LOOP
+      DECLARE
+        l_serial_no VARCHAR2(255);
+        l_answer_value VARCHAR2(4000);
+      BEGIN
+        l_serial_no := l_keys(i);
+        l_answer_value := APEX_JSON.get_varchar2(p_path => 'answers.' || l_serial_no);
+
+        INSERT INTO POLL_RESULTS (POLL_ID, QUESTION_SERIAL_NO, RESULT)
+        VALUES (l_poll_id, TO_NUMBER(l_serial_no), l_answer_value);
+      END;
+    END LOOP;
+  END IF;
+
+  -- 6. Send a success response
   APEX_JSON.open_object;
   APEX_JSON.write('status', 'success');
   APEX_JSON.write('message', 'Answers processed successfully');
@@ -85,59 +84,12 @@ BEGIN
 
 EXCEPTION
   WHEN OTHERS THEN
-    -- Ensure the exception handler is robust
     APEX_JSON.open_object;
     APEX_JSON.write('status', 'error');
     APEX_JSON.write('message', 'PL/SQL Error: ' || SQLERRM);
     APEX_JSON.close_object;
 END;
 
-TEST
-DECLARE
-  -- Simulate the JSON payload from the Rails application
-  l_test_json CLOB := '{"answers":{"1":"2","2":"3"}}';
-
-  l_keys APEX_T_VARCHAR2;
-  l_poll_id NUMBER := 1; -- Use a dummy ID for testing
-BEGIN
-  -- Parse the hardcoded JSON string
-  APEX_JSON.parse(p_source => l_test_json);
-
-  -- Get the keys (which are the serial numbers) from the 'answers' object
-  l_keys := APEX_JSON.get_members(p_path => 'answers');
-
-  -- Process each key-value pair in the object
-  FOR i IN 1..l_keys.COUNT LOOP
-    DECLARE
-      l_serial_no VARCHAR2(255); -- Use VARCHAR2 for the key
-      l_answer_value VARCHAR2(4000);
-    BEGIN
-      -- Retrieve the key (serial number)
-      l_serial_no := l_keys(i);
-
-      -- Get the corresponding value for the key
-      l_answer_value := APEX_JSON.get_varchar2(p_path => 'answers.' || l_serial_no);
-
-      -- For debugging:
-      DBMS_OUTPUT.put_line('Key: ' || l_serial_no || ', Value: ' || l_answer_value);
-
-      -- Insert into the table (with appropriate TO_NUMBER conversion)
-      INSERT INTO POLL_RESULTS (POLL_ID, QUESTION_SERIAL_NO, RESULT)
-      VALUES (l_poll_id, TO_NUMBER(l_serial_no), l_answer_value);
-    END;
-  END LOOP;
-
-  COMMIT; -- Commit the transaction
-
-  DBMS_OUTPUT.put_line('Answers processed successfully.');
-
-EXCEPTION
-  WHEN OTHERS THEN
-    ROLLBACK; -- Rollback on error
-    DBMS_OUTPUT.put_line('PL/SQL Error: ' || SQLERRM);
-END;
-
-END TEST
 
 `GET`: https://oracleapex.com/ords/teochewthunder/polls/poll/:id/results/
 
