@@ -8,7 +8,21 @@ class PollController < ApplicationController
   ORDS_API_URL = ENV["ORDS_API_URL"]
 
   def index
-    response = HTTParty.get(ORDS_API_URL)
+    access_token = get_access_token
+
+    if access_token.nil?
+      flash[:alert] = "Failed to obtain access token."
+      redirect_to root_path
+      return
+    end
+
+    response = HTTParty.get(
+      ORDS_API_URL,
+      headers: { 
+        'Content-Type' => 'application/json',
+        'Authorization' => "Bearer #{access_token}"
+      }
+    )
 
     if response.code == 200
       @api_data = response.parsed_response
@@ -77,9 +91,9 @@ Rails.logger.info ORDS_TOKEN_URL
     begin
       token = client.client_credentials.get_token
       token.token
-    rescue OAuth2::Error => e
-      Rails.logger.error "OAuth2 Error: #{e.message}"
-      nil
+      rescue OAuth2::Error => e
+        Rails.logger.error "OAuth2 Error: #{e.message}"
+        nil
     end
   end
 end
