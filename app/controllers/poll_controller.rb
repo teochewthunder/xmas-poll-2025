@@ -19,7 +19,7 @@ class PollController < ApplicationController
     response = HTTParty.get(
       ORDS_API_URL,
       headers: { 
-        'Content-Type' => 'application/json',
+        'Accept' => 'application/json',
         'Authorization' => "Bearer #{access_token}"
       }
     )
@@ -73,12 +73,14 @@ Rails.logger.info response.body
 Rails.logger.info ORDS_CLIENT_ID
 Rails.logger.info ORDS_CLIENT_SECRET
 Rails.logger.info ORDS_TOKEN_URL
-
+Rails.logger.info "http procy:#{ENV['http_proxy']}"
+Rails.logger.info "https proxy:#{ENV['https_proxy']}"
     connection_opts = {
       request: {
-        open_timeout: 10,  # Timeout in seconds for opening the connection
+        open_timeout: 15,  # Timeout in seconds for opening the connection
         read_timeout: 30   # Timeout in seconds for reading the response
-      }
+      },
+      ssl: { verify: false}
     }
   
     client = OAuth2::Client.new(
@@ -93,6 +95,7 @@ Rails.logger.info ORDS_TOKEN_URL
       token.token
       rescue OAuth2::Error => e
         Rails.logger.error "OAuth2 Error: #{e.message}"
+        Rails.logger.error e.backtrace.join("\n")
         nil
     end
   end
