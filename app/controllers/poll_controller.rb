@@ -73,14 +73,12 @@ Rails.logger.info response.body
 Rails.logger.info ORDS_CLIENT_ID
 Rails.logger.info ORDS_CLIENT_SECRET
 Rails.logger.info ORDS_TOKEN_URL
-Rails.logger.info "http procy:#{ENV['http_proxy']}"
-Rails.logger.info "https proxy:#{ENV['https_proxy']}"
+
     connection_opts = {
       request: {
         open_timeout: 15,  # Timeout in seconds for opening the connection
         read_timeout: 30   # Timeout in seconds for reading the response
-      },
-      ssl: { verify: false}
+      }
     }
   
     client = OAuth2::Client.new(
