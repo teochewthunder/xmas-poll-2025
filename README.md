@@ -48,7 +48,6 @@ ORDER BY pq.SERIAL_NO
 DECLARE
   l_request_body_clob CLOB;
   l_keys APEX_T_VARCHAR2 := APEX_T_VARCHAR2(); -- Initialize the collection
-  l_poll_id NUMBER := 1;
 BEGIN
   -- 1. Use the implicit :body_text bind variable to access the request body
   l_request_body_clob := :body_text;
@@ -71,7 +70,7 @@ BEGIN
         l_answer_value := APEX_JSON.get_varchar2(p_path => 'answers.' || l_serial_no);
 
         INSERT INTO POLL_RESULTS (POLL_ID, QUESTION_SERIAL_NO, RESULT)
-        VALUES (l_poll_id, TO_NUMBER(l_serial_no), l_answer_value);
+        VALUES (:id, TO_NUMBER(l_serial_no), l_answer_value);
       END;
     END LOOP;
   END IF;
