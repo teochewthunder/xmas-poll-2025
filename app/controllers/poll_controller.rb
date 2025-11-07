@@ -1,5 +1,4 @@
 require "httparty"
-require "oauth2"
 
 class PollController < ApplicationController
   ORDS_API_URL = ENV["ORDS_API_URL"]

@@ -33,7 +33,7 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 gem "httparty"
-gem "oauth2"
+#gem "oauth2"
 gem "dotenv-rails", groups: [:development, :test]
 
 group :development, :test do
