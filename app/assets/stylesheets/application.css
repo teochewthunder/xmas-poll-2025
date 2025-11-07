@@ -22,7 +22,7 @@ h1
 	color: rgba(255, 255, 255, 0.5);
 }
 
-.pollform
+.pollform, .pollresult
 {
 	width: 600px;
 	padding: 10px;
