@@ -2,7 +2,7 @@ require "httparty"
 require "oauth2"
 
 class PollController < ApplicationController
-  ORDS_API_URL = "https://oracleapex.com/ords/teochewthunder/polls/poll/1"
+  ORDS_API_URL = ENV["ORDS_API_URL"]
 
   def index
     response = HTTParty.get(
@@ -25,7 +25,7 @@ class PollController < ApplicationController
       ORDS_API_URL,
       body: payload.to_json,
       headers: { 
-        'Content-Type' => 'application/json'
+        "Content-Type" => "application/json"
       }
     )
 
