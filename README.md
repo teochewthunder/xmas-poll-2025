@@ -3,7 +3,7 @@ Rails setup with Oracle Apex database
 
 ## gems
 gem "httparty"
-gem "oauth2"
+gem "rails-controller-testing"
 gem "dotenv-rails", groups: [:development, :test]
 
 ## Database Tables

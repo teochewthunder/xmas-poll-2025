@@ -33,8 +33,8 @@ gem "kamal", require: false
 gem "thruster", require: false
 
 gem "httparty"
-#gem "oauth2"
 gem "dotenv-rails", groups: [:development, :test]
+gem "rails-controller-testing"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
