@@ -2,7 +2,7 @@ require "test_helper"
 
 class PollControllerTest < ActionDispatch::IntegrationTest
   test "should get index" do
-    get root_path
+    get poll_page_url
     assert_response :success
     assert_not_nil assigns(:api_data)
   end

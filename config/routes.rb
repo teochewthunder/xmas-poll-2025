@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  get "poll/", to: "poll#index"
-  get "result/", to: "result#index"
+  get "poll/", to: "poll#index", as: "poll_page"
+  get "result/", to: "result#index", as: "result_page"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
