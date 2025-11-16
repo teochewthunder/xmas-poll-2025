@@ -1,13 +1,17 @@
 <h1>Poll Results</h1>
 <div class="pollresult">
 	<table>
-		<tr><td width="300px"><b>Carol</b></td><td width="150px"><b>Average Rating</b></td><td width="150px"><b>Median Rating</b></td></tr>
-		<% @api_data["items"].each do |result| %>
 		<tr>
-			<td><%= "#{result['title']}" %></td>
-			<td style="text-align: right;"><%= "#{result['avg_result']}" %></td>
-			<td style="text-align: right;"><%= "#{result['median_result']}" %></td>
+			<td width="300px"><b>Carol</b></td><td width="150px" style="text-align: right;"><b>Average Rating</b></td>
+			<td width="150px" style="text-align: right;"><b>Median Rating</b></td>
 		</tr>
+
+		<% @api_data["items"].each do |result| %>
+			<tr>
+				<td><%= "#{result['title']}" %></td>
+				<td style="text-align: right;"><%= "#{sprintf('%.1f', result['avg_result'])}" %></td>
+				<td style="text-align: right;"><%= "#{result['median_result']}" %></td>
+			</tr>
 		<% end %>
 	</table>
 </div>

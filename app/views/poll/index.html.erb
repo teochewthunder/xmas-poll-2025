@@ -3,23 +3,27 @@
 	<%= form_with url: submit_poll_form_path, local: true do |form| %>
 		<% rating_options = (1..5).to_a %>
 		<table>
-			<tr><td width="300px"><b>Carol</b></td><td width="600px"><b>Rating (1 = lowest, 5  = highest)</b></td></tr>
-			<% @api_data["items"].each do |question| %>
 			<tr>
-				<td><%= form.label nil, "#{question['title']}" %></td>
-				<td>
-					<% rating_options.each do |option| %>
-						<%= form.radio_button :none, 
-							option,
-							name: "answers[#{question['serial_no']}]", 
-							id: "answer_#{question['serial_no']}",
-							checked: option == 3
-						%>
-						<%= form.label "answer_#{question['serial_no']}_#{option}", option %>
-						&nbsp;&nbsp;&nbsp;
-					<% end %>
-				</td>
+				<td width="300px"><b>Carol</b></td>
+				<td width="600px"><b>Rating (1 = lowest, 5  = highest)</b></td>
 			</tr>
+			
+			<% @api_data["items"].each do |question| %>
+				<tr>
+					<td><%= form.label nil, "#{question['title']}" %></td>
+					<td>
+						<% rating_options.each do |option| %>
+							<%= form.radio_button :none, 
+								option,
+								name: "answers[#{question['serial_no']}]", 
+								id: "answer_#{question['serial_no']}",
+								checked: option == 3
+							%>
+							<%= form.label "answer_#{question['serial_no']}_#{option}", option %>
+							&nbsp;&nbsp;&nbsp;
+						<% end %>
+					</td>
+				</tr>
 			<% end %>
 		</table>
 		<button>Send</button>
