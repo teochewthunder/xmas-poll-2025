@@ -11,7 +11,7 @@ class PollController < ApplicationController
     if response.code == 200
       @api_data = response.parsed_response
     else
-      flash.now[:alert] = "Error fetching data: #{response.body}"
+      flash.now[:alert] = "Error fetching data."
       @api_data = {}
     end
   end
@@ -31,7 +31,7 @@ class PollController < ApplicationController
     if response.code == 200
       flash[:notice] = "Submission successful!"
     else
-      flash[:alert] = "API error: #{response.body}"
+      flash[:alert] = "API error."
     end
 
     redirect_to root_path

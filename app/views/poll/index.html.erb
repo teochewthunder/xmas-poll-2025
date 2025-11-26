@@ -7,7 +7,7 @@
 				<td width="300px"><b>Carol</b></td>
 				<td width="600px"><b>Rating (1 = lowest, 5  = highest)</b></td>
 			</tr>
-			
+
 			<% @api_data["items"].each do |question| %>
 				<tr>
 					<td><%= form.label nil, "#{question['title']}" %></td>
@@ -16,7 +16,7 @@
 							<%= form.radio_button :none, 
 								option,
 								name: "answers[#{question['serial_no']}]", 
-								id: "answer_#{question['serial_no']}",
+								id: "answer_#{question['serial_no']}_#{option}",
 								checked: option == 3
 							%>
 							<%= form.label "answer_#{question['serial_no']}_#{option}", option %>
