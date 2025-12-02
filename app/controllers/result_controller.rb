@@ -11,7 +11,7 @@ class ResultController < ApplicationController
     if response.code == 200
       @api_data = response.parsed_response
     else
-      flash.now[:alert] = "Error fetching data: #{response.body}"
+      flash.now[:alert] = "Error fetching data."
       @api_data = {}
     end
   end
