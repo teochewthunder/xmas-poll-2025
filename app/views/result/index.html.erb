@@ -1,4 +1,5 @@
 <h1>Poll Results</h1>
+<h2><%= link_to "View Poll", root_path %></h2>
 <div class="pollresult">
 	<table>
 		<tr>
@@ -10,7 +11,7 @@
 			<tr>
 				<td><%= "#{result['title']}" %></td>
 				<td style="text-align: right;"><%= "#{sprintf('%.1f', result['avg_result'])}" %></td>
-				<td style="text-align: right;"><%= "#{result['median_result']}" %></td>
+				<td style="text-align: right;"><%= "#{sprintf('%.1f', result['median_result'])}" %></td>
 			</tr>
 		<% end %>
 	</table>
