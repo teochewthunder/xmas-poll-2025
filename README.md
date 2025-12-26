@@ -1,5 +1,5 @@
-# Xmas Poll 2025 (TBC)
-Rails setup with Oracle Apex database
+# Xmas Poll 2025
+Rails Form Submission using REST API
 
 ## gems
 gem "httparty"
